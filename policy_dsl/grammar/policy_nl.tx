@@ -1,0 +1,64 @@
+// Natural-language Policy DSL Grammar for textX
+// A simpler alternative to the BDD/Gherkin-style grammar.
+
+PolicyNL:
+    'policy' id=QuotedString ':'
+    (description=DescriptionLine)?
+    (enabled=EnabledLine)?
+    effect=EffectLine
+    (taggedWith=TaggedWithLine)?
+    (forPrincipals=ForPrincipalsLine)?
+    (scopedTo=ScopedToLine)?
+    (granting=GrantingLine)?
+    (includeParents=IncludeParentsLine)?
+;
+
+DescriptionLine:
+    'description:' value=QuotedString
+;
+
+EnabledLine:
+    'enabled:' value=BoolValue
+;
+
+EffectLine:
+    effect=EffectValue 'access to' types+=TypeItem[',']
+;
+
+TaggedWithLine:
+    'tagged with' tag=ID
+;
+
+ForPrincipalsLine:
+    'for principals with entitlement' entitlements+=QuotedString[',']
+;
+
+ScopedToLine:
+    'scoped to tag' tag=ID
+;
+
+GrantingLine:
+    'granting' privileges+=ID[',']
+;
+
+IncludeParentsLine:
+    'including parent grants'
+;
+
+// --- Terminals ---
+
+TypeItem:
+    /[a-zA-Z_][a-zA-Z0-9_]*/
+;
+
+QuotedString:
+    '"' value=/[^"]*/ '"'
+;
+
+EffectValue:
+    'allow' | 'deny'
+;
+
+BoolValue:
+    'true' | 'false'
+;

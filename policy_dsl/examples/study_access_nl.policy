@@ -1,0 +1,10 @@
+policy "trial_team_access_by_studyid":
+  description: "Grants select access to users assigned to a clinical trial in CTMS."
+  enabled: true
+
+  allow access to table, vie
+  tagged with STUDYID
+  for principals with entitlement "Clinical Data Programmer", "Clinical Trial Data Manager"
+  scoped to tag STUDYID
+  granting SELECT
+  including parent grants
