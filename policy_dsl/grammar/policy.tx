@@ -1,0 +1,127 @@
+// BDD-style Policy DSL Grammar for textX
+// Parses a Gherkin-like policy specification into a structured model.
+
+PolicySpec:
+    'Feature:' featureTitle=RestOfLine
+
+    'Scenario:' scenarioTitle=RestOfLine
+
+    narrative=Narrative
+
+    clauses+=Clause
+;
+
+Narrative:
+    'As a' role=RestOfLine
+    'I want to' desire=RestOfLine
+    'So that' benefit=RestOfLine
+;
+
+Clause:
+    GivenClause | AndClause | WhenClause | ThenClause
+;
+
+GivenClause:
+    'Given' body=ClauseBody
+;
+
+AndClause:
+    'And' body=ClauseBody
+;
+
+WhenClause:
+    'When' body=ClauseBody
+;
+
+ThenClause:
+    'Then' body=ClauseBody
+;
+
+ClauseBody:
+    PolicyIdClause
+    | PolicyDescriptionClause
+    | PolicyEnabledClause
+    | EffectClause
+    | ResourceTypeClause
+    | ResourceTagClause
+    | PrincipalEntitlementClause
+    | PrincipalScopeClause
+    | PrivilegeClause
+    | AllowAccessClause
+    | IncludeParentGrantsClause
+;
+
+PolicyIdClause:
+    'policy id is' value=QuotedString
+;
+
+PolicyDescriptionClause:
+    'policy description is' value=MultiLineString
+;
+
+PolicyEnabledClause:
+    'policy is' value=EnabledValue
+;
+
+EffectClause:
+    'effect is' value=EffectValue
+;
+
+ResourceTypeClause:
+    'resource type is one of:' items+=TableItem
+;
+
+ResourceTagClause:
+    'resource has tag' value=QuotedString
+;
+
+PrincipalEntitlementClause:
+    'principal entitlement is one of:' items+=TableItem
+;
+
+PrincipalScopeClause:
+    'principal scope matches resource tag' value=QuotedString
+;
+
+PrivilegeClause:
+    'requested privilege is' value=QuotedString
+;
+
+AllowAccessClause:
+    'allow access'
+;
+
+IncludeParentGrantsClause:
+    'include parent grants is' value=BoolValue
+;
+
+// --- Terminals and helpers ---
+
+TableItem:
+    '|' value=/[^|]+/ '|'
+;
+
+QuotedString:
+    '"' value=/[^"]*/ '"'
+;
+
+MultiLineString:
+    '"""' value=/[^"]*(?:"(?!"")[^"]*)*/ '"""'
+;
+
+EnabledValue:
+    'enabled' | 'disabled'
+;
+
+EffectValue:
+    'allow' | 'deny'
+;
+
+BoolValue:
+    'true' | 'false'
+;
+
+// Match rest of line (used for titles and narrative)
+RestOfLine:
+    /[^\n]+/
+;

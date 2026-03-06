@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/bin/pip install -r requirements.txt)",
+      "Bash(.venv/bin/python -m policy_dsl.cli policy_dsl/examples/study_access.policy)"
+    ]
+  }
+}

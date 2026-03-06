@@ -1,0 +1,26 @@
+Feature: Study-scoped trial team access
+
+  Scenario: Trial team can select study-tagged tables and views
+
+    As a clinical data programmer
+    I want to read tables and views tagged with STUDYID
+    So that I can access only data for studies assigned to me
+
+    Given policy id is "trial_team_access_by_studyid"
+    And policy description is """
+      Grants select access to users assigned to a clinical trial in CTMS.
+      The trial is determined by tagging STUDYID on the table.
+    """
+    And policy is enabled
+    And effect is allow
+    And resource type is one of:
+      | table |
+      | view  |
+    And resource has tag "STUDYID"
+    And principal entitlement is one of:
+      | Clinical Data Programmer    |
+      | Clinical Trial Data Manager |
+    And principal scope matches resource tag "STUDYID"
+    When requested privilege is "SELECT"
+    Then allow access
+    And include parent grants is true
